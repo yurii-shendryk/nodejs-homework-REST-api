@@ -5,13 +5,21 @@ const {
   getById,
   create,
   update,
+  replace,
   remove,
 } = require('../../controllers/contactsController');
 
+const {
+  validateCreateContact,
+  validateUpdateContact,
+  validateReplaceContact,
+} = require('../../validation/contactsValidation');
+
 router.get('/', getAll);
 router.get('/:contactId', getById);
-router.post('/', create);
-router.put('/:contactId', update);
+router.post('/', validateCreateContact, create);
+router.patch('/:contactId', validateUpdateContact, update);
+router.put('/:contactId', validateReplaceContact, replace);
 router.delete('/:contactId', remove);
 
 module.exports = router;
