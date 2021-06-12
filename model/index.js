@@ -35,8 +35,7 @@ const addContact = async body => {
   try {
     const contactsList = await listContacts();
     const id = generateId(contactsList);
-    const { name, email, phone } = body;
-    const newContact = { id, name, email, phone };
+    const newContact = { id, ...body };
     const newContactList = [...contactsList, newContact];
     await fs.writeFile(contacts, JSON.stringify(newContactList), 'utf8');
     return newContact;
@@ -60,20 +59,14 @@ const removeContact = async contactId => {
 
 const updateContact = async (contactId, body) => {
   try {
-    const { name, email, phone } = body;
+    const initialContact = await getContactById(contactId);
     const contactsList = await listContacts();
+    const updatedContact = { ...initialContact, ...body };
     const updatedContactList = contactsList.map(contact =>
-      contact.id === Number(contactId)
-        ? {
-            ...contact,
-            name,
-            email,
-            phone,
-          }
-        : contact
+      contact.id === Number(contactId) ? updatedContact : contact
     );
     await fs.writeFile(contacts, JSON.stringify(updatedContactList), 'utf8');
-    return updatedContactList;
+    return updatedContact;
   } catch (error) {
     throw error;
   }
