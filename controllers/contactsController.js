@@ -105,6 +105,5 @@ module.exports = {
   getById,
   create,
   update,
-  // replace,
   remove,
 };
