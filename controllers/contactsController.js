@@ -6,7 +6,6 @@ const {
   removeContact,
   addContact,
   updateContact,
-  replaceContact,
 } = require('../model/index');
 
 const getAll = async (req, res, next) => {
@@ -79,28 +78,6 @@ const update = async (req, res, next) => {
   }
 };
 
-const replace = async (req, res, next) => {
-  try {
-    const id = req.params.contactId;
-    const updatedContact = await replaceContact(id, req.body);
-    const contact = await getContactById(id);
-    if (contact) {
-      res.status(statusCode.OK).json({
-        status: 'success',
-        code: statusCode.OK,
-        data: { updatedContact },
-      });
-    } else {
-      return next({
-        status: statusCode.NOT_FOUND,
-        message: 'Not found',
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
 const remove = async (req, res, next) => {
   try {
     const id = req.params.contactId;
@@ -128,6 +105,6 @@ module.exports = {
   getById,
   create,
   update,
-  replace,
+  // replace,
   remove,
 };

@@ -72,27 +72,10 @@ const updateContact = async (contactId, body) => {
   }
 };
 
-const replaceContact = async (contactId, body) => {
-  try {
-    const initialContact = await getContactById(contactId);
-    const id = initialContact.id;
-    const contactsList = await listContacts();
-    const updatedContact = { id, ...body };
-    const updatedContactList = contactsList.map(contact =>
-      contact.id === Number(contactId) ? updatedContact : contact
-    );
-    await fs.writeFile(contacts, JSON.stringify(updatedContactList), 'utf8');
-    return updatedContact;
-  } catch (error) {
-    throw error;
-  }
-};
-
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
-  replaceContact,
 };
