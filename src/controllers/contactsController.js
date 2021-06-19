@@ -32,7 +32,7 @@ const updateContactController = async (req, res, next) => {
   const id = req.params.contactId;
   const updatedContact = await updateContactById(id, req.body);
   res.status(statusCode.OK).json({
-    data: { updatedContact },
+   updatedContact 
   });
 };
 
