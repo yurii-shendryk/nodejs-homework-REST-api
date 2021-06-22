@@ -3,8 +3,9 @@ const app = express();
 const logger = require('morgan');
 const cors = require('cors');
 
-const { statusCode } = require('./helpers/constants');
-const contactsRouter = require('./routes/api/contacts');
+const { statusCode } = require('./src/helpers/constants');
+const { errorHandler } = require('./src/helpers/apiHelpers');
+const contactsRouter = require('./src/routes/api/contacts');
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
@@ -16,20 +17,10 @@ app.use('/api/contacts', contactsRouter);
 
 app.use((req, res, next) => {
   res.status(statusCode.NOT_FOUND).json({
-    status: 'error',
-    code: statusCode.NOT_FOUND,
     message: 'Not found',
   });
 });
 
-app.use((err, req, res, next) => {
-  err.status = err.status ? err.status : statusCode.INTERNAL_SERVER_ERROR;
-  res.status(err.status).json({
-    status: err.status === 500 ? 'fail' : 'error',
-    code: err.status,
-    message: err.message,
-    data: err.status === 500 ? 'Internal Server Error' : err.data,
-  });
-});
+app.use(errorHandler);
 
 module.exports = app;
