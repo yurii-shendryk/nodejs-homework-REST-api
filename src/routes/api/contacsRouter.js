@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const {
   getAllContactsController,
   getContactByIdController,
@@ -12,9 +13,13 @@ const {
   validateCreateContact,
   validateUpdateStatusContact,
   validateObjectId,
-} = require('../../validation/contactsValidation');
+} = require('../../middlewares/validationMiddlewares');
 
 const { asyncWrapper } = require('../../helpers/apiHelpers');
+
+const { authGuard } = require('../../middlewares/authMiddleware');
+
+router.use(authGuard);
 
 router.get('/', asyncWrapper(getAllContactsController));
 router.get(
@@ -40,4 +45,5 @@ router.delete(
   validateObjectId,
   asyncWrapper(removeContactController)
 );
+
 module.exports = router;

@@ -6,7 +6,7 @@ const {
   addContact,
   updateContactById,
   removeContactById,
-} = require('../model/index');
+} = require('../model/contacts');
 
 const getAllContactsController = async (req, res, next) => {
   const contacts = await getAllContacts();
@@ -32,7 +32,7 @@ const updateContactController = async (req, res, next) => {
   const id = req.params.contactId;
   const updatedContact = await updateContactById(id, req.body);
   res.status(statusCode.OK).json({
-   updatedContact 
+    updatedContact,
   });
 };
 

@@ -2,6 +2,7 @@
 const { Contact } = require('../schemas/contactModel');
 const { statusCode } = require('../helpers/constants');
 const { CustomError } = require('../helpers/errors');
+
 const getAllContacts = async () => {
   const result = await Contact.find({});
   return result;
