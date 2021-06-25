@@ -9,6 +9,7 @@ const {
   getUserByEmail,
   createUser,
   updateToken,
+  updateUserById,
 } = require('../model/users');
 
 const signup = async (email, password) => {
@@ -29,21 +30,22 @@ const login = async (email, password) => {
       'Email or password is wrong'
     );
   }
-
-  const payload = { id: user.id };
+  const payload = { id: user._id };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '2h' });
-  return await updateToken(user.id, token);
+  const result = await updateToken(user._id, token);
+  return result;
 };
 
-const logout = async contactId => {
-  const user = await getUserById(contactId);
-  if (!user) {
-    throw new CustomError(statusCode.UNAUTHORIZED, 'Not authorized');
-  }
-  await updateToken(contactId, null);
-};
+const logout = async userId => await updateToken(userId, null);
+
+const getCurrent = async userId => await getUserById(userId);
+
+const updateUser = async (userId, body) => await updateUserById(userId, body);
+
 module.exports = {
   signup,
   login,
   logout,
+  getCurrent,
+  updateUser,
 };

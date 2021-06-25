@@ -12,6 +12,7 @@ const {
 const {
   validateCreateContact,
   validateUpdateStatusContact,
+  validateQueryContact,
   validateObjectId,
 } = require('../../middlewares/validationMiddlewares');
 
@@ -21,7 +22,7 @@ const { authGuard } = require('../../middlewares/authMiddleware');
 
 router.use(authGuard);
 
-router.get('/', asyncWrapper(getAllContactsController));
+router.get('/', validateQueryContact, asyncWrapper(getAllContactsController));
 router.get(
   '/:contactId',
   validateObjectId,
