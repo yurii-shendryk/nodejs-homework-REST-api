@@ -6,39 +6,44 @@ const {
   addContact,
   updateContactById,
   removeContactById,
-} = require('../model/index');
+} = require('../model/contacts');
 
 const getAllContactsController = async (req, res, next) => {
-  const contacts = await getAllContacts();
+  const userId = req.user.id;
+  const contacts = await getAllContacts(userId, req.query);
   res.status(statusCode.OK).json({
-    contacts,
+    ...contacts,
   });
 };
 
 const getContactByIdController = async (req, res, next) => {
   const id = req.params.contactId;
-  const contact = await getContactById(id);
+  const userId = req.user.id;
+  const contact = await getContactById(id, userId);
   res.status(statusCode.OK).json({
     contact,
   });
 };
 
 const createContactController = async (req, res, next) => {
-  const newContact = await addContact(req.body);
+  const userId = req.user.id;
+  const newContact = await addContact(req.body, userId);
   res.status(statusCode.CREATED).json({ newContact });
 };
 
 const updateContactController = async (req, res, next) => {
   const id = req.params.contactId;
-  const updatedContact = await updateContactById(id, req.body);
+  const userId = req.user.id;
+  const updatedContact = await updateContactById(id, req.body, userId);
   res.status(statusCode.OK).json({
-   updatedContact 
+    updatedContact,
   });
 };
 
 const removeContactController = async (req, res, next) => {
   const id = req.params.contactId;
-  await removeContactById(id);
+  const userId = req.user.id;
+  await removeContactById(id, userId);
   res.status(statusCode.OK).json({
     message: 'contact deleted',
   });
