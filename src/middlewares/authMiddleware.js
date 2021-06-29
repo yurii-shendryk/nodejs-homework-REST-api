@@ -12,11 +12,11 @@ const authGuard = async (req, res, next) => {
   }
   try {
     const user = jwt.decode(token, SECRET_KEY);
-    req.user = user;
     const userInDb = await getUserById(user.id);
     if (!userInDb || userInDb.token !== token) {
       next(new CustomError(statusCode.UNAUTHORIZED, 'Not authorized'));
     }
+    req.user = userInDb;
     next();
   } catch (error) {
     next(new CustomError(statusCode.UNAUTHORIZED, 'Not authorized'));
