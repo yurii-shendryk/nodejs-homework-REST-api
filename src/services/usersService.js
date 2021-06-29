@@ -5,7 +5,6 @@ const { CustomError } = require('../helpers/errors');
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 const { statusCode } = require('../helpers/constants');
 const {
-  getUserById,
   getUserByEmail,
   createUser,
   updateToken,
@@ -36,16 +35,10 @@ const login = async (email, password) => {
   return result;
 };
 
-const logout = async userId => await updateToken(userId, null);
-
-const getCurrent = async userId => await getUserById(userId);
-
 const updateUser = async (userId, body) => await updateUserById(userId, body);
 
 module.exports = {
   signup,
   login,
-  logout,
-  getCurrent,
   updateUser,
 };

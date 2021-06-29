@@ -1,12 +1,8 @@
 const { statusCode } = require('../helpers/constants');
 
-const {
-  signup,
-  login,
-  logout,
-  getCurrent,
-  updateUser,
-} = require('../services/usersService');
+const { signup, login, updateUser } = require('../services/usersService');
+
+const { updateToken } = require('../model/users');
 
 const signupUserController = async (req, res) => {
   const { email, password } = req.body;
@@ -32,14 +28,14 @@ const loginUserController = async (req, res) => {
 };
 
 const logoutUserController = async (req, res) => {
-  const id = req.user.id;
-  await logout(id);
+  const { id } = req.user;
+  const { token } = req.user;
+  await updateToken(id, token);
   res.status(statusCode.NO_CONTENT).json({});
 };
 
 const getCurrentUserController = async (req, res) => {
-  const id = req.user.id;
-  const user = await getCurrent(id);
+  const user = req.user;
   res.status(statusCode.OK).json({
     email: user.email,
     subscription: user.subscription,
