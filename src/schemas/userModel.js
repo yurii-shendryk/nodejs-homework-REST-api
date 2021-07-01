@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const gravatar = require('gravatar');
 const { Schema } = mongoose;
-const SAULT_FACTOR = 6;
+const SALT_FACTOR = 6;
 const { subscription } = require('../helpers/constants');
 
 const usersSchema = new Schema({
@@ -23,13 +24,19 @@ const usersSchema = new Schema({
     type: String,
     default: null,
   },
+  avatarURL: {
+    type: String,
+    default: function () {
+      return gravatar.url(this.email, { s: '250' }, true);
+    },
+  },
 });
 
 usersSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(
       this.password,
-      bcrypt.genSaltSync(SAULT_FACTOR)
+      bcrypt.genSaltSync(SALT_FACTOR)
     );
   }
   return next();
