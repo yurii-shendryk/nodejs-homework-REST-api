@@ -1,3 +1,4 @@
+const path = require('path');
 const statusCode = {
   OK: 200,
   CREATED: 201,
@@ -16,7 +17,16 @@ const subscription = {
   business: 'business',
 };
 
+const temporaryAvatarsFolder = path.join(process.cwd(), process.env.UPLOAD_DIR);
+const finalAvatarsFolder = path.join(
+  process.cwd(),
+  'public',
+  process.env.AVATARS_FOLDER
+);
+
 module.exports = {
   statusCode,
   subscription,
+  temporaryAvatarsFolder,
+  finalAvatarsFolder,
 };
