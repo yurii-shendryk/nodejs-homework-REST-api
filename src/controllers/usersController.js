@@ -1,8 +1,13 @@
 const { statusCode } = require('../helpers/constants');
 
-const { signup, login, updateUser } = require('../services/usersService');
+const {
+  signup,
+  login,
+  updateUserSybscription,
+  saveUserAvatar,
+} = require('../services/usersService');
 
-const { updateToken } = require('../model/users');
+const { updateToken, updateAvatar } = require('../model/users');
 
 const signupUserController = async (req, res) => {
   const { email, password } = req.body;
@@ -11,6 +16,7 @@ const signupUserController = async (req, res) => {
     user: {
       email: user.email,
       subscription: user.subscription,
+      avatarURL: user.avatarURL,
     },
   });
 };
@@ -44,7 +50,7 @@ const getCurrentUserController = async (req, res) => {
 
 const updateUserSubscriptionController = async (req, res) => {
   const userId = req.user.id;
-  const updatedUser = await updateUser(userId, req.body);
+  const updatedUser = await updateUserSybscription(userId, req.body);
   res.status(statusCode.OK).json({
     currentUser: {
       email: updatedUser.email,
@@ -53,10 +59,18 @@ const updateUserSubscriptionController = async (req, res) => {
   });
 };
 
+const updateUserAvatarController = async (req, res) => {
+  const { id } = req.user;
+  const avatar = req.user.avatarURL;
+  const avatarURL = await updateAvatar(id, req.file, avatar, saveUserAvatar);
+  res.json({ avatarURL });
+};
+
 module.exports = {
   signupUserController,
   loginUserController,
   logoutUserController,
   getCurrentUserController,
   updateUserSubscriptionController,
+  updateUserAvatarController,
 };
