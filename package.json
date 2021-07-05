@@ -6,13 +6,16 @@
     "start": "cross-env NODE_ENV=production node ./bin/server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon ./bin/server.js",
     "lint": "eslint **/*.js",
-    "lint:fix": "eslint --fix **/*.js"
+    "lint:fix": "eslint --fix **/*.js",
+    "test": "cross-env NODE_ENV=test jest --no-cache --verbose --detectOpenHandles",
+    "test:coverage": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
     "cors": "2.8.5",
     "cross-env": "7.0.3",
     "dotenv": "^10.0.0",
+    "eslint-plugin-jest": "^24.3.6",
     "express": "4.17.1",
     "express-query-boolean": "^2.0.0",
     "gravatar": "1.8.1",
@@ -34,8 +37,10 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "husky": "^4.2.5",
+    "jest": "^27.0.6",
     "lint-staged": "^11.0.0",
     "nodemon": "2.0.7",
-    "prettier": "^2.3.1"
+    "prettier": "^2.3.1",
+    "supertest": "^6.1.3"
   }
 }
