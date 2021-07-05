@@ -34,7 +34,7 @@ const loginUserController = async (req, res) => {
 };
 
 const logoutUserController = async (req, res) => {
-  const { id } = req.user;
+  const id = req.user._id;
   const { token } = req.user;
   await updateToken(id, token);
   res.status(statusCode.NO_CONTENT).json({});
@@ -49,7 +49,7 @@ const getCurrentUserController = async (req, res) => {
 };
 
 const updateUserSubscriptionController = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const updatedUser = await updateUserSybscription(userId, req.body);
   res.status(statusCode.OK).json({
     currentUser: {
@@ -60,7 +60,7 @@ const updateUserSubscriptionController = async (req, res) => {
 };
 
 const updateUserAvatarController = async (req, res) => {
-  const { id } = req.user;
+  const id = req.user._id;
   const avatar = req.user.avatarURL;
   const avatarURL = await updateAvatar(id, req.file, avatar, saveUserAvatar);
   res.json({ avatarURL });
