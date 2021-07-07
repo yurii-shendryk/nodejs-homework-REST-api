@@ -1,20 +1,19 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 const { statusCode } = require('../helpers/constants');
 const { CustomError } = require('../helpers/errors');
 const { getUserById } = require('../model/users');
 
 const authGuard = async (req, res, next) => {
-  const token = req.get('Authorization')?.split(' ')[1];
-  if (!token) {
-    next(new CustomError(statusCode.UNAUTHORIZED, 'Not authorized'));
-  }
   try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return next(new CustomError(statusCode.UNAUTHORIZED, 'Not authorized'));
+    }
     const user = jwt.decode(token, SECRET_KEY);
     const userInDb = await getUserById(user.id);
     if (!userInDb || userInDb.token !== token) {
-      next(new CustomError(statusCode.UNAUTHORIZED, 'Not authorized'));
+      return next(new CustomError(statusCode.UNAUTHORIZED, 'Not authorized'));
     }
     req.user = userInDb;
     next();

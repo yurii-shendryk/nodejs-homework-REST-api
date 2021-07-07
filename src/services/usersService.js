@@ -1,14 +1,18 @@
 /* eslint-disable no-useless-catch */
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const { uuid } = require('uuidv4');
+const Jimp = require('jimp');
+const path = require('path');
+const fs = require('fs/promises');
 const { CustomError } = require('../helpers/errors');
+
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
-const { statusCode } = require('../helpers/constants');
+const { statusCode, finalAvatarsFolder } = require('../helpers/constants');
 const {
   getUserByEmail,
   createUser,
-  updateToken,
   updateUserById,
+  updateToken,
 } = require('../model/users');
 
 const signup = async (email, password) => {
@@ -35,10 +39,29 @@ const login = async (email, password) => {
   return result;
 };
 
-const updateUser = async (userId, body) => await updateUserById(userId, body);
+const updateUserSybscription = async (userId, body) =>
+  await updateUserById(userId, body);
+
+const saveUserAvatar = async (file, avatar) => {
+  const pathName = file.path;
+  const newAvatar = `${uuid()}-${file.originalname}`;
+  const img = await Jimp.read(pathName);
+  await img.autocrop().cover(250, 250).writeAsync(pathName);
+  try {
+    await fs.rename(pathName, path.join(`${finalAvatarsFolder}`, newAvatar));
+  } catch (error) {
+    await fs.unlink(pathName);
+    throw error;
+  }
+  if (avatar.includes(`${process.env.AVATARS_FOLDER}/`)) {
+    await fs.unlink(path.join(process.cwd(), 'public', avatar));
+  }
+  return path.join(process.env.AVATARS_FOLDER, newAvatar).replace('\\', '/');
+};
 
 module.exports = {
   signup,
   login,
-  updateUser,
+  updateUserSybscription,
+  saveUserAvatar,
 };

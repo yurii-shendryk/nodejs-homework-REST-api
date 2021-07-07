@@ -3,8 +3,8 @@ const { User } = require('../schemas/userModel');
 const { statusCode } = require('../helpers/constants');
 const { CustomError } = require('../helpers/errors');
 
-const getUserById = async contactId => {
-  return await User.findOne({ _id: contactId });
+const getUserById = async userId => {
+  return await User.findOne({ _id: userId });
 };
 
 const getUserByEmail = async email => {
@@ -30,8 +30,13 @@ const updateUserById = async (userId, body) => {
   return result;
 };
 
-const updateToken = async (contactId, token) => {
-  return await User.findByIdAndUpdate(contactId, { token }, { new: true });
+const updateToken = async (userId, token) =>
+  await User.findByIdAndUpdate(userId, { token }, { new: true });
+
+const updateAvatar = async (userId, file, avatar, cb) => {
+  const avatarURL = await cb(file, avatar);
+  await User.findByIdAndUpdate(userId, { avatarURL }, { new: true });
+  return avatarURL;
 };
 
 module.exports = {
@@ -40,4 +45,5 @@ module.exports = {
   createUser,
   updateToken,
   updateUserById,
+  updateAvatar,
 };

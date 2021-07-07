@@ -10,13 +10,12 @@ const getAllContacts = async (userId, query) => {
     filter,
     favorite = null,
     limit = 5,
-    page,
+    page = 1,
   } = query;
   const optionsSearch = { owner: userId };
   if (favorite !== null) {
     optionsSearch.favorite = favorite;
   }
-  console.log(optionsSearch);
   const { docs: contacts, totalDocs: total } = await Contact.paginate(
     optionsSearch,
     {
@@ -40,7 +39,7 @@ const getAllContacts = async (userId, query) => {
     );
   }
 
-  return page ? { contacts, total, limit, page: Number(page) } : { contacts };
+  return { contacts, total, limit, page: Number(page) };
 };
 
 const getContactById = async (contactId, userId) => {
@@ -81,7 +80,10 @@ const updateContactById = async (contactId, body, userId) => {
 };
 
 const removeContactById = async (contactId, userId) => {
-  const result = await Contact.findOneAndRemove({ _id: contactId, userId });
+  const result = await Contact.findOneAndRemove({
+    _id: contactId,
+    owner: userId,
+  });
   if (!result) {
     throw new CustomError(statusCode.NOT_FOUND, 'Not found');
   }
