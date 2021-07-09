@@ -5,9 +5,15 @@ const {
   login,
   updateUserSybscription,
   saveUserAvatar,
+  resendVerificationToken,
 } = require('../services/usersService');
 
-const { updateToken, updateAvatar } = require('../model/users');
+const {
+  getUserByVerifyToken,
+  updateToken,
+  updateAvatar,
+  updateVerifyToken,
+} = require('../model/users');
 
 const signupUserController = async (req, res) => {
   const { email, password } = req.body;
@@ -63,7 +69,22 @@ const updateUserAvatarController = async (req, res) => {
   const id = req.user._id;
   const avatar = req.user.avatarURL;
   const avatarURL = await updateAvatar(id, req.file, avatar, saveUserAvatar);
-  res.json({ avatarURL });
+  res.status(statusCode.OK).json({ avatarURL });
+};
+
+const verificationUserTokenController = async (req, res) => {
+  const verifyToken = req.params.verificationToken;
+  const verifiedUser = await getUserByVerifyToken(verifyToken);
+  await updateVerifyToken(verifiedUser._id, true, null);
+  res.status(statusCode.OK).json({ message: 'Verification successful' });
+};
+
+const resendVerificationTokenController = async (req, res) => {
+  const { email } = req.body;
+  await resendVerificationToken(email);
+  res.status(statusCode.OK).json({
+    message: 'Verification email sent',
+  });
 };
 
 module.exports = {
@@ -73,4 +94,6 @@ module.exports = {
   getCurrentUserController,
   updateUserSubscriptionController,
   updateUserAvatarController,
+  verificationUserTokenController,
+  resendVerificationTokenController,
 };
