@@ -21,7 +21,7 @@ const setServiceLink = env => {
 const createTemplateVerifyEmail = (verifyToken, userEmail) => {
   const serviseLink = setServiceLink(process.env.NODE_ENV);
   const mailGenerator = new Mailgen({
-    theme: 'default',
+    theme: 'cerberus',
     product: {
       name: 'Contacts book',
       link: serviseLink,
