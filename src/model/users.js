@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-catch */
+const { v4: uuidv4 } = require('uuid');
 const { User } = require('../schemas/userModel');
 const { statusCode } = require('../helpers/constants');
 const { CustomError } = require('../helpers/errors');
@@ -12,8 +13,18 @@ const getUserByEmail = async email => {
 };
 
 const createUser = async (email, password) => {
-  const user = new User({ email, password });
-  return await user.save();
+  const verifyToken = uuidv4();
+  const user = new User({ email, password, verifyToken });
+  await user.save();
+  return user;
+};
+
+const getUserByVerifyToken = async verifyToken => {
+  const verifiedUser = await User.findOne({ verifyToken });
+  if (!verifiedUser) {
+    throw new CustomError(statusCode.NOT_FOUND, 'User not found');
+  }
+  return verifiedUser;
 };
 
 const updateUserById = async (userId, body) => {
@@ -39,11 +50,16 @@ const updateAvatar = async (userId, file, avatar, cb) => {
   return avatarURL;
 };
 
+const updateVerifyToken = async (userId, verify, verifyToken) =>
+  await User.findByIdAndUpdate(userId, { verify, verifyToken }, { new: true });
+
 module.exports = {
   getUserById,
   getUserByEmail,
   createUser,
+  getUserByVerifyToken,
   updateToken,
   updateUserById,
   updateAvatar,
+  updateVerifyToken,
 };
