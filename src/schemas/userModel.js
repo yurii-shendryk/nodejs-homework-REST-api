@@ -5,32 +5,43 @@ const { Schema } = mongoose;
 const SALT_FACTOR = 6;
 const { subscription } = require('../helpers/constants');
 
-const usersSchema = new Schema({
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-  },
-  subscription: {
-    type: String,
-    enum: [subscription.starter, subscription.pro, subscription.business],
-    default: subscription.starter,
-  },
-  token: {
-    type: String,
-    default: null,
-  },
-  avatarURL: {
-    type: String,
-    default: function () {
-      return gravatar.url(this.email, { s: '250' }, true);
+const usersSchema = new Schema(
+  {
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+    },
+    subscription: {
+      type: String,
+      enum: [subscription.starter, subscription.pro, subscription.business],
+      default: subscription.starter,
+    },
+    token: {
+      type: String,
+      default: null,
+    },
+    avatarURL: {
+      type: String,
+      default: function () {
+        return gravatar.url(this.email, { s: '250' }, true);
+      },
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verifyToken: {
+      type: String,
+      required: [true, 'Verify token is required'],
     },
   },
-});
+  { versionKey: false, timestamps: true }
+);
 
 usersSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
