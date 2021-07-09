@@ -40,6 +40,15 @@ const schemaCreateUser = Joi.object({
   password: Joi.string().alphanum().min(6).max(30).required(),
 });
 
+const schemaResendVerificationEmail = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: false },
+    })
+    .required(),
+});
+
 const schemaUpdateUserSubscription = Joi.object({
   subscription: Joi.string()
     .valid(...Object.values(subscription))
@@ -98,6 +107,16 @@ const validateCreateUser = (req, res, next) => {
   }
   return validate(schemaCreateUser, req.body, next);
 };
+
+const validateResendVerificationEmail = (req, res, next) => {
+  if (Object.keys(req.body).length === 0) {
+    return next(
+      new CustomError(statusCode.BAD_REQUEST, 'missing required field email')
+    );
+  }
+  return validate(schemaResendVerificationEmail, req.body, next);
+};
+
 const validateUpdateUserSubscription = (req, res, next) => {
   if (Object.keys(req.body).length === 0) {
     return next(
@@ -114,4 +133,5 @@ module.exports = {
   validateObjectId,
   validateCreateUser,
   validateUpdateUserSubscription,
+  validateResendVerificationEmail,
 };
